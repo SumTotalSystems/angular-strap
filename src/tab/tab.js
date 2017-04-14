@@ -12,9 +12,11 @@ angular.module('mgcrea.ngStrap.tab', [])
     };
     var _tabsHash = {};
 
-    var _addTabControl = function (key, control) {
-      if (!_tabsHash[key]) _tabsHash[key] = control;
-    };
+    var _addTabControl = function(key, control)
+    {
+      if (!_tabsHash[key])
+        _tabsHash[key] = control;
+    }
 
     var controller = this.controller = function ($scope, $element, $attrs) {
       var self = this;
@@ -85,9 +87,15 @@ angular.module('mgcrea.ngStrap.tab', [])
         return self.$panes.$active === $pane.name || self.$panes.$active === $index;
       };
 
-      self.$onKeyPress = $scope.$onKeyPress = function (e, index) {
+      self.$onKeyPress = $scope.$onKeyPress = function (e, name, index) {
         if (e.keyCode === 32 || e.charCode === 32 || e.keyCode === 13 || e.charCode === 13) {
-          self.$setActive(index);
+            self.$setActive(name);
+        }
+        else if((e.keyCode === 37 || e.charCode === 37) && index != 0) {
+          self.$setActive(self.$panes[index - 1].name || index - 1);
+        }
+        else if((e.keyCode === 39 || e.charCode === 39) && index != self.$panes.length - 1) {
+          self.$setActive(self.$panes[index + 1].name || index + 1);
         }
       };
     };
@@ -97,13 +105,13 @@ angular.module('mgcrea.ngStrap.tab', [])
       $tab.defaults = defaults;
       $tab.controller = controller;
       $tab.addTabControl = _addTabControl;
-      $tab.tabsHash = _tabsHash;
+		  $tab.tabsHash = _tabsHash;
       return $tab;
     };
 
   })
 
-  .directive('bsTabs', function ($window, $animate, $tab, $parse) {
+  .directive('bsTabs', function ($window, $animate, $tab, $parse, $timeout) {
 
     var defaults = $tab.defaults;
 
@@ -120,9 +128,9 @@ angular.module('mgcrea.ngStrap.tab', [])
         var ngModelCtrl = controllers[0];
         var bsTabsCtrl = controllers[1];
 
-        // Add a way for developers to access tab scope if needed.  This allows for more fine grained control over what
-        // tabs are available in the tab component
-        if (attrs.tabKey !== '' && attrs.tabKey !== undefined) {
+ 			  //Add a way for developers to access tab scope if needed.  This allows for more fine grained control over what
+				//tabs are available in the tab component
+				if (attrs.tabKey != '' && attrs.tabKey != undefined){
           $tab.addTabControl(attrs.tabKey, bsTabsCtrl);
         }
 
@@ -143,6 +151,21 @@ angular.module('mgcrea.ngStrap.tab', [])
           });
 
         }
+        
+        bsTabsCtrl.$activePaneChangeListeners.push(function () {
+          $timeout(function(){
+            // get li elements
+            var liElements = element.find('li');
+            for (var i = 0; i < liElements.length; i++) {
+              var iElement = angular.element(liElements[i])
+              if(iElement.hasClass(bsTabsCtrl.$options.activeClass)) {
+                // if li is active, set focus to it.
+                iElement.find('a')[0].focus();
+              }
+            }
+            // delay, for the class (.active) change to reflect in DOM.
+          }, 100);
+        })
 
         if (attrs.bsActivePane) {
           // adapted from angularjs ngModelController bindings
