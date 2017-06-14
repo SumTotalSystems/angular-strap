@@ -32,7 +32,7 @@ angular.module('mgcrea.ngStrap.tab', [])
       $scope.$onClick = function $onClick (evt, pane, index) {
         if (!pane.disabled) {
           self.$setActive(pane.name || index);
-          focusCurrentTab();
+          focusCurrentTab(index);
         }
 
         evt.preventDefault();
@@ -54,18 +54,16 @@ angular.module('mgcrea.ngStrap.tab', [])
           navigatePane(newIndex, toLeft);
         } else {
           self.$setActive(self.$panes[newIndex].name || newIndex);
-          focusCurrentTab();
+          focusCurrentTab(newIndex);
         }
       }
 
-      function focusCurrentTab () {
-        $timeout(function () {
-          var activeAs = angular.element($element[0].querySelectorAll('li.' + self.$options.activeClass));
+      function focusCurrentTab (index) {
+        var activeAs = angular.element($element[0].querySelectorAll('li'));
 
-          if (activeAs.length > 0 && activeAs[0]) {
-            activeAs[0].focus();
-          }
-        }, 100);
+        if (activeAs.length > 0 && activeAs[index]) {
+          activeAs[index].focus();
+        }
       }
 
       self.$panes = $scope.$panes = [];
@@ -196,21 +194,6 @@ angular.module('mgcrea.ngStrap.tab', [])
             return modelValue;
           });
         }
-
-        bsTabsCtrl.$activePaneChangeListeners.push(function () {
-          $timeout(function () {
-            // get li elements
-            var liElements = element.find('li');
-            for (var i = 0; i < liElements.length; i++) {
-              var iElement = angular.element(liElements[i]);
-              if (iElement.hasClass(bsTabsCtrl.$options.activeClass)) {
-                // if li is active, set focus to it.
-                iElement.find('a')[0].focus();
-              }
-            }
-            // delay, for the class (.active) change to reflect in DOM.
-          }, 100);
-        });
 
         if (attrs.bsActivePane) {
           // adapted from angularjs ngModelController bindings
