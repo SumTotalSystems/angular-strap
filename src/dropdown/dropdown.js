@@ -38,12 +38,13 @@ angular.module('mgcrea.ngStrap.dropdown', ['mgcrea.ngStrap.tooltip'])
           element.attr('aria-haspopup', 'true');
           element.attr('data-toggle', 'dropdown');
           element.attr('aria-expanded', 'false');
-          element.attr('role', 'button');
+          //element.attr('role', 'button');
         }
 
         // Protected methods
 
         $dropdown.$onKeyDown = function (evt) {
+          
           if ((/(9)/.test(evt.keyCode) && !options.keyboard) || /27/.test(evt.keyCode)) {
             $dropdown.hide(/27/.test(evt.keyCode));
             return;
@@ -104,7 +105,7 @@ angular.module('mgcrea.ngStrap.dropdown', ['mgcrea.ngStrap.tooltip'])
             if ($dropdown.$element) {
               $dropdown.$element.attr('aria-hidden', 'false');
               $dropdown.$element.attr('role', 'menu');
-              $dropdown.$element.attr('tabindex', '-1');
+              //$dropdown.$element.attr('tabindex', '-1'); <ul> element should have no tabindex per SS-9603
             }
             if (options.keyboard && $dropdown.$element) {
               $dropdown.$element.on('keydown', $dropdown.$onKeyDown);
@@ -115,14 +116,21 @@ angular.module('mgcrea.ngStrap.dropdown', ['mgcrea.ngStrap.tooltip'])
 
             if ($dropdown.$element) {
               var items = angular.element($dropdown.$element[0].querySelectorAll('li:not(.divider)'));
-              items.attr('role', 'presentation');
+              items.attr('role', 'none');
 
               angular.element($dropdown.$element[0].querySelectorAll('li.divider')).attr('role', 'seperator');
 
               items = angular.element($dropdown.$element[0].querySelectorAll('li:not(.divider) a'));
               items.attr('role', 'menuitem');
               if (items.length && options.keyboard) {
-                items[0].focus();
+                //items[0].focus(); Removing initial focus as user must tab into the menu per SS-9603
+
+                // User must tab into the menu and only use the arrows keys to navigate between menu items per SS-9603
+                angular.forEach(items, function(value, key){
+                  if(key > 0){
+                    angular.element(value).attr('tabindex', '-1');
+                  }
+                });
               }
             }
           }, 0, false);
