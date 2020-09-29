@@ -21,8 +21,11 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
       autoSelect: false,
       comparator: '',
       trimValue: true,
-      translations: null,
-      feedbackId: '',
+      translations: {
+        resultsText: 'suggestions',
+        noResultsText: 'no suggestions available',
+        selectResultText: 'you must select a value from the dropdown list'
+      },
       selectedProperty: ''
     };
 
@@ -87,6 +90,16 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           // before repositioning
           safeDigest(scope);
           $$rAF($typeahead.$applyPlacement);
+        };
+
+        $typeahead.setFeedbackMessage = function (message) {
+          var el = angular.element(document.getElementById(scope.$id + '_sr_text'));
+          if (el) {
+            angular.element(el).text(message);
+            setTimeout(function () {
+              angular.element(el).text('');
+            }, 2000);
+          }
         };
 
         $typeahead.activate = function (index) {
@@ -159,13 +172,25 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         };
 
         $typeahead.$onKeyDown = function (evt) {
+          $typeahead.setAriaActiveDescendant();
+
           // If the key code isn't up arrow, down arrow, or enter return.
-          if (!/(38|40|13)/.test(evt.keyCode)) return;
+          if (!/(38|40|13|27|9)/.test(evt.keyCode)) return;
 
           // Let ngSubmit pass if the typeahead tip is hidden or no option is selected
           if ($typeahead.$isVisible() && !(evt.keyCode === KEY_CODES.enter && scope.$activeIndex === -1)) {
             evt.preventDefault();
             evt.stopPropagation();
+          }
+
+          if (evt.which === KEY_CODES.escape || evt.which === KEY_CODES.tab) {
+            if ($typeahead.$isVisible()) {
+              var translations = angular.fromJson(options.translations);
+              $typeahead.setFeedbackMessage(translations.selectResultText);
+            } else {
+              $typeahead.hide();
+              evt.stopPropagation();
+            }
           }
 
           // Select with enter
@@ -174,12 +199,10 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
             // Navigate with keyboard
           } else if (evt.keyCode === KEY_CODES.upArrow && scope.$activeIndex > 0) {
             scope.$activeIndex--;
-            setAriaActiveDescendant(scope.$activeIndex);
-            angular.element(document.getElementById(options.id + '_sr_text')).html(scope.$matches[scope.$activeIndex].label);
+            $typeahead.setAriaActiveDescendant(scope.$activeIndex);
           } else if (evt.keyCode === KEY_CODES.downArrow && scope.$activeIndex < scope.$matches.length - 1) {
             scope.$activeIndex++;
-            setAriaActiveDescendant(scope.$activeIndex);
-            angular.element(document.getElementById(options.id + '_sr_text')).html(scope.$matches[scope.$activeIndex].label);
+            $typeahead.setAriaActiveDescendant(scope.$activeIndex);
           } else if ((evt.keyCode === KEY_CODES.upArrow && scope.$activeIndex === 0) || (evt.keyCode === KEY_CODES.downArrow && scope.$activeIndex === scope.$matches.length - 1)) {
             scope.$activeIndex = -1;
             var ele = '#' + evt.currentTarget.id;
@@ -188,7 +211,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
             angular.element(ele).focus();
           } else if (angular.isUndefined(scope.$activeIndex)) {
             scope.$activeIndex = 0;
-            setAriaActiveDescendant();
+            $typeahead.setAriaActiveDescendant();
           }
 
           // update scrollTop property on $typeahead when scope.$activeIndex is not in visible area
@@ -205,14 +228,14 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           // event bubbling from being processed immediately.
           $timeout(function () {
             if ($typeahead.$element) {
-              if (options.id) {
+              if (scope.$id) {
                 // Set the id on the "dropdown" component of the typeahead. The input should "control" this element.
-                $typeahead.$element.attr('id', options.id + '_listbox');
-                element.attr('aria-controls', options.id + '_listbox');
+                $typeahead.$element.attr('id', scope.$id + '_listbox');
+                element.attr('aria-controls', scope.$id + '_listbox');
 
-                var assertDiv = document.getElementById(options.id + '_sr_text');
+                var assertDiv = document.getElementById(scope.$id + '_sr_text');
                 if (!assertDiv) {
-                  $typeahead.$element.parent().append('<div id="' + options.id + '_sr_text" aria-live="assertive" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;"></div>');
+                  $typeahead.$element.parent().append('<div id="' + scope.$id + '_sr_text" aria-live="assertive" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;"></div>');
                 }
               }
 
@@ -241,10 +264,10 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
             $typeahead.activate(-1);
           }
 
-          var assertDiv = document.getElementById(options.id + '_sr_text');
+          var assertDiv = document.getElementById(scope.$id + '_sr_text');
           angular.element(assertDiv).remove();
 
-          setAriaActiveDescendant();
+          $typeahead.setAriaActiveDescendant();
 
           hide();
         };
@@ -260,33 +283,25 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         var onFocusKeyUp = $typeahead.$onFocusKeyUp; // eslint-disable-line no-unused-vars
         $typeahead.$onFocusKeyUp = function (evt) {
           if (evt.which === KEY_CODES.escape) {
-            // Feedback message handling as per SS-25684 and SS-11481
-            if (options.feedbackId !== void 0 && options.translations !== void 0) {
-              var translations = angular.fromJson(options.translations);
-              var element = document.getElementById(options.feedbackId);
-              if ($typeahead.$scope.$matches !== void 0 && $typeahead.$scope.$matches.length > 0) {
-                angular.element(element).text(translations.selectResultText);
-              }
-              // $typeahead.hide();
-              // evt.stopPropagation();
-            }
+            $typeahead.hide();
+            evt.stopPropagation();
           }
         };
 
         // Helper functions within this closure
 
-        function setAriaActiveDescendant (index) {
+        $typeahead.setAriaActiveDescendant = function (index) {
           if (index === undefined || !scope.id) {
-            element.removeAttr('aria-activedescendant');
+            element.attr('aria-activedescendant', '');
           } else {
             var resultId = scope.$generateResultId(index);
             if (resultId) {
               element.attr('aria-activedescendant', resultId);
             } else {
-              element.removeAttr('aria-activedescendant');
+              element.attr('aria-activedescendant', '');
             }
           }
-        }
+        };
 
         return $typeahead;
 
@@ -336,7 +351,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         var options = {
           scope: scope
         };
-        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'filter', 'limit', 'minLength', 'watchOptions', 'selectMode', 'autoSelect', 'comparator', 'id', 'prefixEvent', 'prefixClass', 'ariaLabelledby', 'translations', 'feedbackId', 'selectedProperty'], function (key) {
+        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'filter', 'limit', 'minLength', 'watchOptions', 'selectMode', 'autoSelect', 'comparator', 'id', 'prefixEvent', 'prefixClass', 'ariaLabelledby', 'translations', 'selectedProperty'], function (key) {
           if (angular.isDefined(attr[key])) options[key] = attr[key];
         });
 
@@ -356,6 +371,9 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
 
         // Disable browser autocompletion
         if (!element.attr('autocomplete')) element.attr('autocomplete', 'off');
+
+        // Add aria-expanded attribute
+        element.attr('aria-expanded', false);
 
         // Build proper bsOptions
         var filter = angular.isDefined(options.filter) ? options.filter : defaults.filter;
@@ -395,6 +413,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         scope.$watch(attr.ngModel, function (newValue, oldValue) {
           // console.warn('$watch', element.attr('ng-model'), newValue);
           scope.$modelValue = newValue; // Publish modelValue on scope for custom templates
+          typeahead.setAriaActiveDescendant();
           parsedOptions.valuesFn(scope, controller)
             .then(function (values) {
               // Prevent input with no future prospect if selectMode is truthy
@@ -432,8 +451,6 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         controller.$render = function () {
           // console.warn('$render', element.attr('ng-model'), 'controller.$modelValue', typeof controller.$modelValue, controller.$modelValue, 'controller.$viewValue', typeof controller.$viewValue, controller.$viewValue);
           if (controller.$isEmpty(controller.$viewValue)) {
-            // Feedback message handling as per SS-25684 and SS-11481
-            setFeedbackMessage('');
             return element.val('');
           }
           var index = typeahead.$getIndex(controller.$modelValue);
@@ -445,34 +462,17 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           element.val(options.trimValue === false ? value : value.trim());
           element[0].setSelectionRange(ss, sd);
 
-          // Feedback message handling as per SS-25684 and SS-11481
-          if (options.translations !== void 0) {
-            // Clear feedback element contents
-            setFeedbackMessage('');
-
-            if (typeahead.$scope.$matches !== void 0) {
-              var translations = angular.fromJson(options.translations);
-              if (typeahead.$scope.$matches.length > 0) {
-                setFeedbackMessage(typeahead.$scope.$matches.length + ' ' + translations.resultsText);
-              } else {
-                setFeedbackMessage(translations.noResultsText);
-              }
+          if (typeahead.$scope.$matches !== void 0 && selected.length >= options.minLength) {
+            var translations = angular.fromJson(options.translations);
+            if (typeahead.$scope.$matches.length > 0) {
+              typeahead.setFeedbackMessage(typeahead.$scope.$matches.length + ' ' + translations.resultsText);
+            } else {
+              typeahead.setFeedbackMessage(translations.noResultsText);
             }
           }
+
+          element.attr('aria-expanded', typeahead.$isVisible());
         };
-
-        // Feedback message handling as per SS-25684 and SS-11481
-        element.on('keydown', function (evt) {
-          if (evt.which === 9) {
-            evt.preventDefault();
-            if (options.translations !== void 0) {
-              var translations = angular.fromJson(options.translations);
-              if (typeahead.$scope.$matches.length > 0) {
-                setFeedbackMessage(translations.selectResultText);
-              }
-            }
-          }
-        });
 
         // Garbage collection
         scope.$on('$destroy', function () {
@@ -481,14 +481,6 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           options = null;
           typeahead = null;
         });
-
-        function setFeedbackMessage (message) {
-          if (options.feedbackId !== void 0) {
-            var element = document.getElementById(options.feedbackId);
-            angular.element(element).text(message);
-          }
-        }
-
       }
     };
 
