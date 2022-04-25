@@ -442,7 +442,6 @@ angular.module('mgcrea.ngStrap.tooltip', ['mgcrea.ngStrap.core', 'mgcrea.ngStrap
           angular.forEach(triggers, function (trigger) {
             if (trigger === 'click' || trigger === 'contextmenu') {
               element.on(trigger, $tooltip.toggle);
-              // element.on('blur', $tooltip.leave);
             } else if (trigger !== 'manual') {
               // Only bind up hover events if we are on a desktop
               if (!isTouch) {
@@ -452,10 +451,6 @@ angular.module('mgcrea.ngStrap.tooltip', ['mgcrea.ngStrap.core', 'mgcrea.ngStrap
                 element.on('focus', $tooltip.enter);
                 element.on('blur', $tooltip.leave);
               }
-
-              // if (nodeName === 'button' && trigger !== 'hover') {
-              //   element.on(isTouch ? 'touchstart' : 'mousedown', $tooltip.$onFocusElementMouseDown);
-              // }
             }
           });
         }
@@ -475,10 +470,6 @@ angular.module('mgcrea.ngStrap.tooltip', ['mgcrea.ngStrap.core', 'mgcrea.ngStrap
                 element.off('focus', $tooltip.enter);
                 element.off('blur', $tooltip.leave);
               }
-
-              // if (nodeName === 'button' && trigger !== 'hover') {
-              //   element.off(isTouch ? 'touchstart' : 'mousedown', $tooltip.$onFocusElementMouseDown);
-              // }
             }
           }
         }
@@ -505,7 +496,9 @@ angular.module('mgcrea.ngStrap.tooltip', ['mgcrea.ngStrap.core', 'mgcrea.ngStrap
           // event bubbling from being processed imediately.
           $timeout(function () {
             // Stop propagation when clicking inside tooltip
-            tipElement.on('click', stopEventPropagation);
+            if (tipElement !== null) {
+              tipElement.on('click', stopEventPropagation);
+            }
 
             // Hide when clicking outside tooltip
             $body.on('click', $tooltip.hide);

@@ -48,31 +48,31 @@ angular.module('mgcrea.ngStrap.dropdown', ['mgcrea.ngStrap.tooltip'])
           } else if ($dropdown.$element && (evt.keyCode === 38 || evt.keyCode === 40 || evt.keyCode === 32 || evt.keyCode === 13)) {
             //$dropdown.$element.focus();
 
-            evt.preventDefault();
-            evt.stopPropagation();
+          evt.preventDefault();
+          evt.stopPropagation();
 
             // Retrieve active index
-            var items = angular.element($dropdown.$element[0].querySelectorAll('li:not(.divider) a'));
-            if (!items.length) return;
-            var index;
-            angular.forEach(items, function (el, i) {
+          var items = angular.element($dropdown.$element[0].querySelectorAll('li:not(.divider) a'));
+          if (!items.length) return;
+          var index;
+          angular.forEach(items, function (el, i) {
               if (matchesSelector && matchesSelector.call(el, '.active')) {
                 index = i;
                 angular.element(el).removeClass('active');
               }
-            });
+          });
 
-            // Navigate with keyboard
+          // Navigate with keyboard
             if (evt.keyCode === 32 || evt.keyCode === 13) {
               items.eq(index).click();
             } else if (evt.keyCode === 38 && index > 0) index--;
             else if (evt.keyCode === 38 && (angular.isUndefined(index) || index === 0)) index = items.length - 1;
-            else if (evt.keyCode === 40 && index < items.length - 1) index++;
+          else if (evt.keyCode === 40 && index < items.length - 1) index++;
             else if (evt.keyCode === 40 && index === items.length - 1) index = 0;
-            else if (angular.isUndefined(index)) index = 0;
+          else if (angular.isUndefined(index)) index = 0;
             items.eq(index).addClass('active');
             $dropdown.$element.attr('aria-activedescendant', items.eq(index).attr('id'));
-			items.eq(index)[0].focus();
+          items.eq(index)[0].focus();
           }
         };
 

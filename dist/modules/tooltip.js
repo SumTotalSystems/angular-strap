@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.12 - 2021-12-03
+ * @version v2.3.12 - 2022-04-25
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -371,7 +371,9 @@ angular.module('mgcrea.ngStrap.tooltip', [ 'mgcrea.ngStrap.core', 'mgcrea.ngStra
       var _autoCloseEventsBinded = false;
       function bindAutoCloseEvents() {
         $timeout(function() {
-          tipElement.on('click', stopEventPropagation);
+          if (tipElement !== null) {
+            tipElement.on('click', stopEventPropagation);
+          }
           $body.on('click', $tooltip.hide);
           _autoCloseEventsBinded = true;
         }, 0, false);

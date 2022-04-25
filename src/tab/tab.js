@@ -208,7 +208,7 @@ angular.module('mgcrea.ngStrap.tab', [])
                 // if li is active, set focus to it.
                 // iElement.find('a')[0].focus();
               // }
-            }
+        }
             // delay, for the class (.active) change to reflect in DOM.
           }, 100);
         });

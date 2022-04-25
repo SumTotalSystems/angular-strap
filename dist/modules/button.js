@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.12 - 2021-12-03
+ * @version v2.3.12 - 2022-04-25
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -41,6 +41,7 @@ angular.module('mgcrea.ngStrap.button', []).provider('$button', function() {
     link: function postLink(scope, element, attr, controller) {
       var options = defaults;
       var isInput = element[0].nodeName === 'INPUT';
+      if (isInput) options.toggleEvent = 'change';
       var activeElement = isInput ? element.parent() : element;
       var trueValue = angular.isDefined(attr.trueValue) ? attr.trueValue : true;
       if (constantValueRegExp.test(attr.trueValue)) {
@@ -99,6 +100,7 @@ angular.module('mgcrea.ngStrap.button', []).provider('$button', function() {
     link: function postLink(scope, element, attr, controller) {
       var options = defaults;
       var isInput = element[0].nodeName === 'INPUT';
+      if (isInput) options.toggleEvent = 'change';
       var activeElement = isInput ? element.parent() : element;
       var value;
       attr.$observe('value', function(v) {

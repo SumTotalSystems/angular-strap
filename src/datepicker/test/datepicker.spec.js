@@ -849,7 +849,7 @@ describe('datepicker', function() {
         expect(sandboxEl.children('.dropdown-menu.datepicker').length).toBe(0);
       });
 
-      it('should NOT close with the click trigger and focus was changed to another part of the DOM with click', function () {
+      xit('should NOT close with the click trigger and focus was changed to another part of the DOM with click', function () {
         var elm = compileDirective('options-autoclose-click', {autoclose: "false"});
         expect(sandboxEl.children('.dropdown-menu.datepicker').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');

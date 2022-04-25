@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.12 - 2021-12-03
+ * @version v2.3.12 - 2022-04-25
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -32,7 +32,7 @@ angular.module('mgcrea.ngStrap.modal', [ 'mgcrea.ngStrap.core', 'mgcrea.ngStrap.
     var forEach = angular.forEach;
     var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
     var bodyElement = angular.element($window.document.body);
-    var layoutHideElement = angular.element('#layoutContainer');
+    var layoutHideElement = angular.element(document.querySelector('#layoutContainer'));
     var backdropCount = 0;
     var dialogBaseZindex = 1050;
     var backdropBaseZindex = 1040;
@@ -184,7 +184,9 @@ angular.module('mgcrea.ngStrap.modal', [ 'mgcrea.ngStrap.core', 'mgcrea.ngStrap.
         }
         modalElement.attr('aria-hidden', 'false');
         modalElement.attr('tabindex', '0');
-        modalElement.trigger('focus');
+        $timeout(function() {
+          jQuery(modalElement).trigger('focus');
+        }, 200);
         if (!modalElement.length || !angular.element(modalElement[0]).hasClass('modal')) {
           layoutHideElement.attr('aria-hidden', 'false');
           unbindKeyboardEvents();

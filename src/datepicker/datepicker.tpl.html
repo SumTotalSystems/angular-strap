@@ -10,22 +10,22 @@
       <tr class="text-center" role="row">
         <th scope="col" role="columnheader">
           <button tabindex="0" ng-attr-tabindex="{{focusOnOpen ? '0' : '-1'}}" type="button" class="btn btn-default pull-left" ng-click="$selectPane(-1)" ng-blur="$blurred($event)" ng-attr-aria-label="{{$previousLabel || undefined}}" ng-attr-title="{{$previousLabel || undefined}}">
-            <i class="{{$iconLeft}}"></i>
-          </button>
-        </th>
-        <th colspan="{{ rows[0].length - 2 }}">
+          <i class="{{$iconLeft}}"></i>
+        </button>
+      </th>
+      <th colspan="{{ rows[0].length - 2 }}">
           <button tabindex="0" ng-attr-tabindex="{{focusOnOpen ? '0' : '-1'}}" type="button" class="btn btn-default btn-block text-strong" ng-click="$toggleMode()" ng-blur="$blurred($event)" ng-attr-title="{{$modeLabel || undefined }}">
-            <strong style="text-transform: capitalize;" ng-bind="title"></strong>
-          </button>
-        </th>
+          <strong style="text-transform: capitalize;" ng-bind="title"></strong>
+        </button>
+      </th>
         <th scope="col" role="columnheader">
           <button tabindex="0" ng-attr-tabindex="{{focusOnOpen ? '0' : '-1'}}" type="button" class="btn btn-default pull-right" ng-click="$selectPane(+1)" ng-blur="$blurred($event)" ng-attr-aria-label="{{$nextLabel || undefined}}" ng-attr-title="{{$nextLabel || undefined}}">
-            <i class="{{$iconRight}}"></i>
-          </button>
-        </th>
-      </tr>
-      <tr ng-if="showLabels" ng-bind-html="labels"></tr>
-    </thead>
+          <i class="{{$iconRight}}"></i>
+        </button>
+      </th>
+    </tr>
+    <tr ng-if="showLabels" ng-bind-html="labels"></tr>
+  </thead>
     <tbody role="presentation">
       <tr ng-attr-id="{{id || undefined}}_row_{{i}}" role="row" ng-repeat="(i, row) in rows" height="{{ 100 / rows.length }}%">
         <td ng-attr-id="{{el.id || undefined}}"
@@ -48,26 +48,26 @@
             <span ng-class="{'text-muted': el.muted || el.disabled}" ng-bind="el.label"></span>
           </span>
           <!--focus-element="keyboard && ((hasSelectedDate && el.selected) || (!hasSelectedDate && el.isToday))"-->
-        </td>
-      </tr>
-    </tbody>
+      </td>
+    </tr>
+  </tbody>
     <tfoot role="presentation">
       <tr role="row">
-        <td colspan="{{ rows[0].length }}">
-          <div class="btn-group btn-group-justified" role="group">
-            <div class="btn-group" role="group" ng-if="$hasToday">
+      <td colspan="{{ rows[0].length }}">
+        <div class="btn-group btn-group-justified" role="group">
+          <div class="btn-group" role="group" ng-if="$hasToday">
               <button type="button" class="btn btn-default today " ng-click="$setToday()" ng-disabled="isTodayDisabled" ng-attr-tabindex="{{focusOnOpen ? '0' : '-1'}}">
               <strong style="text-transform: capitalize;">Today</strong>
             </button>
-            </div>
-            <div class="btn-group" role="group" ng-if="$hasClear">
+          </div>
+          <div class="btn-group" role="group" ng-if="$hasClear">
               <button type="button" class="btn btn-default clear" ng-click="$clear()" ng-attr-tabindex="{{focusOnOpen ? '0' : '-1'}}">
               <strong style="text-transform: capitalize;">Clear</strong>
             </button>
-            </div>
           </div>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+        </div>
+      </td>
+    </tr>
+  </tfoot>
+</table>
 </div>

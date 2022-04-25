@@ -332,9 +332,9 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
           var continueHandling = handleOnKeyDown(evt);
 
           if (continueHandling) {
-            // Navigate with keyboard
-            $picker.onKeyDown(evt);
-            parentScope.$digest();
+          // Navigate with keyboard
+          $picker.onKeyDown(evt);
+          parentScope.$digest();
           }
         };
 
@@ -450,8 +450,8 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
                 // $datepicker.$element.find('table')[0].focus();
                 // $datepicker.$element.on('focusout', $datepicker.$onFocusOut);
               } else {
-                element.on('keydown', $datepicker.$onKeyDown);
-              }
+              element.on('keydown', $datepicker.$onKeyDown);
+            }
             }
           }, 0, false);
         };
@@ -910,10 +910,10 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
               });
               picker.$build();
             } else if (date.getDate() !== viewDate.date || date.getDate() === 1) {
-              // chaging picker current month will cause viewDate.date to be set to first day of the month,
-              // in $datepicker.$selectPane, so picker would not update selected day display if
-              // user picks first day of the new month.
-              // As a workaround, we are always forcing update when picked date is first day of month.
+                // chaging picker current month will cause viewDate.date to be set to first day of the month,
+                // in $datepicker.$selectPane, so picker would not update selected day display if
+                // user picks first day of the new month.
+                // As a workaround, we are always forcing update when picked date is first day of month.
               viewDate.date = picker.$date.getDate();
               picker.$updateSelected();
             }
@@ -924,7 +924,7 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
             var firstDate = new Date(+firstDayOfMonth - mod(firstDayOfMonth.getDay() - options.startWeek, 7) * 864e5);
             var firstDateOffset = firstDate.getTimezoneOffset();
             var today = dateParser.timezoneOffsetAdjust(new Date(), options.timezone).toDateString();
-            // Handle daylight time switch
+              // Handle daylight time switch
             if (firstDateOffset !== firstDayOfMonthOffset) firstDate = new Date(+firstDate + (firstDateOffset - firstDayOfMonthOffset) * 60e3);
             var days = [];
             var day;
@@ -966,7 +966,7 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
                 todayDay.focused = true;
               } else {
                 defaultFirstDayTabIndex = true;
-              }
+            }
             }
 
             scope.title = formatDate(firstDayOfMonth, options.monthTitleFormat);
@@ -989,13 +989,13 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
           isDisabled: function (date) {
             var time = date.getTime();
 
-            // Disabled because of min/max date.
+              // Disabled because of min/max date.
             if (time < options.minDate || time > options.maxDate) return true;
 
-            // Disabled due to being a disabled day of the week
+              // Disabled due to being a disabled day of the week
             if (options.daysOfWeekDisabled.indexOf(date.getDay()) !== -1) return true;
 
-            // Disabled because of disabled date range.
+              // Disabled because of disabled date range.
             if (options.disabledDateRanges) {
               for (var i = 0; i < options.disabledDateRanges.length; i++) {
                 if (time >= options.disabledDateRanges[i].start && time <= options.disabledDateRanges[i].end) {
@@ -1155,7 +1155,7 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
                 thisMonth.focused = true;
               } else {
                 defaultFirstDayTabIndex = true;
-              }
+            }
             }
 
             scope.title = formatDate(month, options.yearTitleFormat);

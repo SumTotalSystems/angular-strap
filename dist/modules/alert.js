@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.12 - 2021-12-03
+ * @version v2.3.12 - 2022-04-25
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -31,20 +31,24 @@ angular.module('mgcrea.ngStrap.alert', [ 'mgcrea.ngStrap.modal' ]).provider('$al
       $alert = $modal(options);
       $alert.returnFocus = function() {
         function findFocusableElements() {
-          var containerEl = angular.element($alert.$element).closest('[ng-controller]');
+          var containerEl = jQuery($alert.$element).closest('[ng-controller]');
           return containerEl.find('a:not([disabled]),button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([disabled]):not([tabindex="-1"])').filter(function(i, el) {
             return !angular.element(el).parentsUntil(containerEl, '[tabindex="-1"]').length;
           });
         }
         function findNextFocusableElement() {
           if (document.activeElement) {
-            var focusable = findFocusableElements().toArray();
-            if (focusable === undefined) return;
-            var index = focusable.indexOf(document.activeElement);
-            return focusable[index + 1];
+            var focusable = findFocusableElements();
+            if (focusable && focusable.toArray) {
+              var index = focusable.toArray().indexOf(document.activeElement);
+              return focusable[index + 1];
+            }
           }
         }
-        angular.element(findNextFocusableElement()).trigger('focus');
+        var nextFocusable = findNextFocusableElement();
+        if (nextFocusable) {
+          angular.element(findNextFocusableElement()).trigger('focus');
+        }
       };
       $alert.$scope.dismissable = !!options.dismissable;
       if (options.type) {

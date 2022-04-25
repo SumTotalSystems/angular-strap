@@ -31,7 +31,7 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.core', 'mgcrea.ngStrap.h
       var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
       var bodyElement = angular.element($window.document.body);
 
-      var layoutHideElement = angular.element('#layoutContainer');
+      var layoutHideElement = angular.element(document.querySelector('#layoutContainer'));
 
       var backdropCount = 0;
       var dialogBaseZindex = 1050;
@@ -252,7 +252,9 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.core', 'mgcrea.ngStrap.h
 
           modalElement.attr('aria-hidden', 'false');
           modalElement.attr('tabindex', '0');
-          modalElement.trigger('focus');
+          $timeout(function () {
+	          jQuery(modalElement).trigger('focus');
+		  }, 200);
           if (!modalElement.length || !angular.element(modalElement[0]).hasClass('modal')) {
             layoutHideElement.attr('aria-hidden', 'false');
             unbindKeyboardEvents();
@@ -357,7 +359,7 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.core', 'mgcrea.ngStrap.h
           // Escape was pressed on an open modal. Hide it.  Backspace key, nothing happen.
           if ((evt.which === 8 || evt.which === 27) && $modal.$isShown) {
             if (evt.which === 27) {
-              $modal.hide();
+            $modal.hide();
             }
             evt.stopPropagation();
           }

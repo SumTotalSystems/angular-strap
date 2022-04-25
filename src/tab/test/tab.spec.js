@@ -114,10 +114,10 @@ describe('tab', function () {
       var elm = compileDirective('default');
       expect(sandboxEl.find('.nav-tabs > li.active').text()).toBe('title-1');
       expect(sandboxEl.find('.tab-content > .tab-pane.active').text()).toBe('content-1');
-      sandboxEl.find('.nav-tabs > li:eq(1) > a').triggerHandler('click');
+      sandboxEl.find('.nav-tabs > li:eq(1)').triggerHandler('click');
       expect(sandboxEl.find('.nav-tabs > li.active').text()).toBe('title-2');
       expect(sandboxEl.find('.tab-content > .tab-pane.active').text()).toBe('content-2');
-      sandboxEl.find('.nav-tabs > li:eq(0) > a').triggerHandler('click');
+      sandboxEl.find('.nav-tabs > li:eq(0)').triggerHandler('click');
       expect(sandboxEl.find('.nav-tabs > li.active').text()).toBe('title-1');
       expect(sandboxEl.find('.tab-content > .tab-pane.active').text()).toBe('content-1');
     });
@@ -138,20 +138,20 @@ describe('tab', function () {
       var elm = compileDirective('defaultNested');
       expect(sandboxEl.find('.nav-tabs:first > li.active').text()).toBe('title-1');
       expect(sandboxEl.find('.tab-content:first > .tab-pane.active .tab-content:first > .tab-pane.active').text()).toBe('content-nested-11');
-      sandboxEl.find('.nav-tabs:first > li:eq(1) > a').triggerHandler('click');
+      sandboxEl.find('.nav-tabs:first > li:eq(1)').triggerHandler('click');
       expect(sandboxEl.find('.nav-tabs:first > li.active').text()).toBe('title-2');
       expect(sandboxEl.find('.tab-content:first > .tab-pane.active .tab-content:first > .tab-pane.active').text()).toBe('content-nested-21');
-      sandboxEl.find('.nav-tabs:first > li:eq(0) > a').triggerHandler('click');
+      sandboxEl.find('.nav-tabs:first > li:eq(0)').triggerHandler('click');
       expect(sandboxEl.find('.nav-tabs:first > li.active').text()).toBe('title-1');
       expect(sandboxEl.find('.tab-content:first > .tab-pane.active .tab-content:first > .tab-pane.active ').text()).toBe('content-nested-11');
     });
 
     it('should navigate between nested panes on click', function() {
       var elm = compileDirective('defaultNested');
-      sandboxEl.find('.tab-content:first > .tab-pane.active .nav-tabs > li:eq(1) > a').triggerHandler('click');
+      sandboxEl.find('.tab-content:first > .tab-pane.active .nav-tabs > li:eq(1)').triggerHandler('click');
       expect(sandboxEl.find('.tab-content:first > .tab-pane.active .nav-tabs > li.active').text()).toBe('title-nested-12');
       expect(sandboxEl.find('.tab-content:first > .tab-pane.active .tab-content:first > .tab-pane.active').text()).toBe('content-nested-12');
-      sandboxEl.find('.tab-content:first > .tab-pane.active .nav-tabs > li:eq(0) > a').triggerHandler('click');
+      sandboxEl.find('.tab-content:first > .tab-pane.active .nav-tabs > li:eq(0)').triggerHandler('click');
       expect(sandboxEl.find('.tab-content:first > .tab-pane.active .nav-tabs > li.active').text()).toBe('title-nested-11');
       expect(sandboxEl.find('.tab-content:first > .tab-pane.active .tab-content:first > .tab-pane.active').text()).toBe('content-nested-11');
     });
@@ -172,10 +172,10 @@ describe('tab', function () {
       var elm = compileDirective('template-ngRepeat');
       expect(sandboxEl.find('.nav-tabs > li.active').text()).toBe(scope.tabs[0].title);
       expect(sandboxEl.find('.tab-content > .tab-pane.active').text()).toBe(scope.tabs[0].content);
-      sandboxEl.find('.nav-tabs > li:eq(1) > a').triggerHandler('click');
+      sandboxEl.find('.nav-tabs > li:eq(1)').triggerHandler('click');
       expect(sandboxEl.find('.nav-tabs > li.active').text()).toBe(scope.tabs[1].title);
       expect(sandboxEl.find('.tab-content > .tab-pane.active').text()).toBe(scope.tabs[1].content);
-      sandboxEl.find('.nav-tabs > li:eq(0) > a').triggerHandler('click');
+      sandboxEl.find('.nav-tabs > li:eq(0)').triggerHandler('click');
       expect(sandboxEl.find('.nav-tabs > li.active').text()).toBe(scope.tabs[0].title);
       expect(sandboxEl.find('.tab-content > .tab-pane.active').text()).toBe(scope.tabs[0].content);
     });
@@ -186,7 +186,7 @@ describe('tab', function () {
       expect(sandboxEl.find('.tab-content > .tab-pane').length).toBe(scope.tabs.length);
       scope.tabs.push({title:'New Tab', content: 'New tab content...'});
       scope.$digest();
-      expect(sandboxEl.find('.nav-tabs > li').length).toBe(scope.tabs.length);      
+      expect(sandboxEl.find('.nav-tabs > li').length).toBe(scope.tabs.length);
       expect(sandboxEl.find('.tab-content > .tab-pane').length).toBe(scope.tabs.length);
     });
 
@@ -195,7 +195,7 @@ describe('tab', function () {
       expect(sandboxEl.find('.nav-tabs > li').length).toBe(scope.tabs.length);
       scope.tabs.pop();
       scope.$digest();
-      expect(sandboxEl.find('.nav-tabs > li').length).toBe(scope.tabs.length);      
+      expect(sandboxEl.find('.nav-tabs > li').length).toBe(scope.tabs.length);
     });
 
   });
@@ -216,7 +216,7 @@ describe('tab', function () {
 
       it('should correctly apply view changes to the model', function() {
         var elm = compileDirective('binding-' + bindingAttribute);
-        sandboxEl.find('.nav-tabs > li:eq(0) > a').triggerHandler('click');
+        sandboxEl.find('.nav-tabs > li:eq(0)').triggerHandler('click');
         expect(scope.tab.active).toBe(0);
       });
 
@@ -228,7 +228,7 @@ describe('tab', function () {
 
       it('should set tab name into model if it is provided', function() {
         var elm = compileDirective('binding-named-' + bindingAttribute);
-        sandboxEl.find('.nav-tabs > li:eq(1) > a').triggerHandler('click');
+        sandboxEl.find('.nav-tabs > li:eq(1)').triggerHandler('click');
         expect(scope.tab.active).toBe('title-2');
       });
 
@@ -330,10 +330,10 @@ describe('tab', function () {
         expect(sandboxEl.find('.nav-tabs > li.active').length).toBe(0);
         expect(sandboxEl.find('.nav-tabs > li.in').text()).toBe('title-1');
         expect(sandboxEl.find('.tab-content > .tab-pane.in').text()).toBe('content-1');
-        sandboxEl.find('.nav-tabs > li:eq(1) > a').triggerHandler('click');
+        sandboxEl.find('.nav-tabs > li:eq(1)').triggerHandler('click');
         expect(sandboxEl.find('.nav-tabs > li.in').text()).toBe('title-2');
         expect(sandboxEl.find('.tab-content > .tab-pane.in').text()).toBe('content-2');
-        sandboxEl.find('.nav-tabs > li:eq(0) > a').triggerHandler('click');
+        sandboxEl.find('.nav-tabs > li:eq(0)').triggerHandler('click');
         expect(sandboxEl.find('.nav-tabs > li.in').text()).toBe('title-1');
         expect(sandboxEl.find('.tab-content > .tab-pane.in').text()).toBe('content-1');
       });

@@ -115,7 +115,7 @@ describe('collapse', function () {
     it ('should not open or close panels that are disabled', function () {
       var elm = compileDirective('default-disabled-attr');
       expect(sandboxEl.find('[bs-collapse-target]:eq(0)').hasClass('in')).toBeTruthy();
-      //the second toggle link is disabled
+      //the second toggle link is disabled 
       sandboxEl.find('[bs-collapse-toggle]:eq(1)').triggerHandler('click');
       expect(sandboxEl.find('[bs-collapse-target]:eq(0)').hasClass('in')).toBeTruthy();
       expect(sandboxEl.find('[bs-collapse-target]:eq(1)').hasClass('in')).toBeFalsy();
@@ -168,7 +168,7 @@ describe('collapse', function () {
 
   });
 
-  describe('data-binding', function () {
+  describe('data-binding', function() {
 
     it('should correctly apply model changes to the view', function() {
       var elm = compileDirective('binding-ngModel');

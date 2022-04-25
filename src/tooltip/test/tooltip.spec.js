@@ -1241,7 +1241,7 @@ describe('tooltip', function() {
         angular.element(elm[0]).triggerHandler('mouseenter');
 
         var tip = sandboxEl.children('.tooltip')[0];
-        expect(tip.offsetWidth <= 500).toBe(true);
+        expect(tip.offsetWidth <= document.documentElement.clientWidth + 10).toBe(true);
       }));
     });
 

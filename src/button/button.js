@@ -49,6 +49,8 @@ angular.module('mgcrea.ngStrap.button', [])
 
         // Support label > input[type="checkbox"]
         var isInput = element[0].nodeName === 'INPUT';
+        //1.7 inputs now listen to change event
+        if (isInput) options.toggleEvent = "change";
         var activeElement = isInput ? element.parent() : element;
 
         var trueValue = angular.isDefined(attr.trueValue) ? attr.trueValue : true;
@@ -134,6 +136,8 @@ angular.module('mgcrea.ngStrap.button', [])
 
         // Support `label > input[type="radio"]` markup
         var isInput = element[0].nodeName === 'INPUT';
+        //1.7 inputs now listen to change event
+        if (isInput) options.toggleEvent = "change";
         var activeElement = isInput ? element.parent() : element;
 
         var value;

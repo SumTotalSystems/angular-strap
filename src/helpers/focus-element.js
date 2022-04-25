@@ -8,8 +8,8 @@ angular.module('mgcrea.ngStrap.helpers.focusElement', [])
           if (value === true) {
             $timeout(function(){
               $(element[0]).animate(
-                {left:0}, 
-                100, 
+                {left:0},
+                100,
                 function(){
                   element[0].focus();
                 }
