@@ -35,6 +35,7 @@ angular.module('mgcrea.ngStrap.tab', [])
       // Publish options on scope
       $scope.$navClass = self.$options.navClass;
       $scope.$activeClass = self.$options.activeClass;
+	  $scope.userLang = undefined;
 
       $scope.$onClick = function $onClick (evt, pane, index) {
         if (!pane.disabled) {
@@ -62,6 +63,9 @@ angular.module('mgcrea.ngStrap.tab', [])
           self.$setActive(self.$panes[newIndex].name || newIndex);
         }
       }
+	  self.$setUserLang = function (lang) {
+		  $scope.userLang = lang;
+	  }
 
       self.$panes = $scope.$panes = [];
 
@@ -212,6 +216,10 @@ angular.module('mgcrea.ngStrap.tab', [])
             // delay, for the class (.active) change to reflect in DOM.
           }, 100);
         });
+		
+		if (attrs.bsLang) {
+		  bsTabsCtrl.$setUserLang(attrs.bsLang);
+		}
 
         if (attrs.bsActivePane) {
           // adapted from angularjs ngModelController bindings

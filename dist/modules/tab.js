@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.12 - 2022-04-25
+ * @version v2.3.12 - 2024-12-12
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -31,6 +31,7 @@ angular.module('mgcrea.ngStrap.tab', []).provider('$tab', function() {
     });
     $scope.$navClass = self.$options.navClass;
     $scope.$activeClass = self.$options.activeClass;
+    $scope.userLang = undefined;
     $scope.$onClick = function $onClick(evt, pane, index) {
       if (!pane.disabled) {
         self.$setActive(pane.name || index);
@@ -51,6 +52,9 @@ angular.module('mgcrea.ngStrap.tab', []).provider('$tab', function() {
         self.$setActive(self.$panes[newIndex].name || newIndex);
       }
     }
+    self.$setUserLang = function(lang) {
+      $scope.userLang = lang;
+    };
     self.$panes = $scope.$panes = [];
     self.$activePaneChangeListeners = self.$viewChangeListeners = [];
     self.$push = function(pane) {
@@ -149,6 +153,9 @@ angular.module('mgcrea.ngStrap.tab', []).provider('$tab', function() {
           }
         }, 100);
       });
+      if (attrs.bsLang) {
+        bsTabsCtrl.$setUserLang(attrs.bsLang);
+      }
       if (attrs.bsActivePane) {
         var parsedBsActivePane = $parse(attrs.bsActivePane);
         bsTabsCtrl.$activePaneChangeListeners.push(function() {

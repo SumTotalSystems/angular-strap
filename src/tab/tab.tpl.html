@@ -4,7 +4,7 @@
     data-toggle="tab" data-index="{{ $index }}" ng-click="$onClick($event, $pane, $index)"
     ng-keydown="$onKeyPress($event, $pane.name || $index, $index)" ng-attr-aria-hidden="{{$pane.disabled || undefined}}"
     focus-on="$isActive($pane, $index)">
-    <a ng-attr-id="{{$pane.$labeledBy || undefined}}" role="tab" tabindex="{{$isActive($pane, $index) ? 0 : -1}}" ng-bind-html="$pane.title" ng-attr-aria-selected="{{$isActive($pane, $index)}}" ng-attr-aria-controls="{{$pane.id || undefined}}"></a>
+    <a ng-attr-id="{{$pane.$labeledBy || undefined}}" role="tab" tabindex="{{$isActive($pane, $index) ? 0 : -1}}" ng-bind-html="$pane.title" ng-attr-aria-selected="{{$isActive($pane, $index)}}" ng-attr-aria-controls="{{$pane.id || undefined}}" lang="{{userLang || undefined}}"></a>
   </li>
 </ul>
 <div ng-transclude class="tab-content">
