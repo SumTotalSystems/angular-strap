@@ -683,6 +683,7 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
           } else {
             controller.$dateValue = dateParser.timezoneOffsetAdjust(date, options.timezone);
           }
+	     validateAgainstMinMaxDate(date);
           return getDateFormattedString();
         });
 
@@ -826,7 +827,7 @@ angular.module('mgcrea.ngStrap.datepicker', ['mgcrea.ngStrap.helpers.dateParser'
           } else {
             controller.$dateValue = dateParser.timezoneOffsetAdjust(date, options.timezone);
           }
-
+		validateAgainstMinMaxDate(date);
           return getDateFormattedString();
         });
 

@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.12 - 2024-12-12
+ * @version v2.3.12 - 2024-12-27
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -438,6 +438,7 @@ angular.module('mgcrea.ngStrap.datepicker', [ 'mgcrea.ngStrap.helpers.dateParser
         } else {
           controller.$dateValue = dateParser.timezoneOffsetAdjust(date, options.timezone);
         }
+        validateAgainstMinMaxDate(date);
         return getDateFormattedString();
       });
       controller.$render = function() {
@@ -540,6 +541,7 @@ angular.module('mgcrea.ngStrap.datepicker', [ 'mgcrea.ngStrap.helpers.dateParser
         } else {
           controller.$dateValue = dateParser.timezoneOffsetAdjust(date, options.timezone);
         }
+        validateAgainstMinMaxDate(date);
         return getDateFormattedString();
       });
       function getDateFormattedString() {
