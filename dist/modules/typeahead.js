@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.3.12 - 2024-12-27
+ * @version v2.3.12 - 2025-04-23
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com> (https://github.com/mgcrea)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -69,6 +69,20 @@ angular.module('mgcrea.ngStrap.typeahead', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.n
         scope.$matches = matches;
         if (scope.$activeIndex >= matches.length) {
           scope.$activeIndex = options.autoSelect ? 0 : -1;
+        }
+        const parentEl = element.parent();
+        if (matches.length > 0) {
+          parentEl.attr('aria-expanded', 'true');
+        } else {
+          parentEl.attr('aria-expanded', 'false');
+        }
+        const liveRegion = document.getElementById(options.id + '_sr_text');
+        if (liveRegion) {
+          if (scope.$matches && scope.$matches.length > 0) {
+            liveRegion.textContent = scope.$matches.length + ' Results are available';
+          } else {
+            liveRegion.textContent = 'No results found.';
+          }
         }
         safeDigest(scope);
         $$rAF($typeahead.$applyPlacement);
@@ -156,6 +170,8 @@ angular.module('mgcrea.ngStrap.typeahead', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.n
       };
       var show = $typeahead.show;
       $typeahead.show = function() {
+        const hasMatches = scope.$matches && scope.$matches.length > 0;
+        element.parent().attr('aria-expanded', hasMatches ? 'true' : 'false');
         show();
         $timeout(function() {
           if ($typeahead.$element) {
@@ -164,7 +180,15 @@ angular.module('mgcrea.ngStrap.typeahead', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.n
               element.attr('aria-controls', options.id + '_listbox');
               var assertDiv = document.getElementById(options.id + '_sr_text');
               if (!assertDiv) {
-                $typeahead.$element.parent().append('<div id="' + options.id + '_sr_text" aria-live="assertive" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;"></div>');
+                $typeahead.$element.parent().append('<div id="' + options.id + '_sr_text" aria-live="assertive" aria-atomic="true" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;"></div>');
+              }
+              const liveRegion = document.getElementById(options.id + '_sr_text');
+              if (liveRegion) {
+                if (hasMatches) {
+                  liveRegion.textContent = scope.$matches.length + ' Results are available.';
+                } else {
+                  liveRegion.textContent = 'No results found.';
+                }
               }
             }
             $typeahead.$element.attr('aria-labelledby', options.ariaLabelledby);
@@ -188,6 +212,7 @@ angular.module('mgcrea.ngStrap.typeahead', [ 'mgcrea.ngStrap.tooltip', 'mgcrea.n
         var assertDiv = document.getElementById(options.id + '_sr_text');
         angular.element(assertDiv).remove();
         setAriaActiveDescendant();
+        element.parent().attr('aria-expanded', 'false');
         hide();
       };
       var onKeyUp = $typeahead.$onKeyUp;

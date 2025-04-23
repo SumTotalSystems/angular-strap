@@ -82,6 +82,21 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           if (scope.$activeIndex >= matches.length) {
             scope.$activeIndex = options.autoSelect ? 0 : -1;
           }
+          const parentEl = element.parent();
+          if (matches.length > 0) {
+            parentEl.attr('aria-expanded', 'true');
+          } else {
+            parentEl.attr('aria-expanded', 'false');
+          }
+
+          const liveRegion = document.getElementById(options.id + '_sr_text');
+          if (liveRegion) {
+            if (scope.$matches && scope.$matches.length > 0) {
+              liveRegion.textContent = scope.$matches.length + ' Results are available';
+            } else {
+              liveRegion.textContent = 'No results found.';
+            }
+          }
 
           // wrap in a $timeout so the results are updated
           // before repositioning
@@ -200,6 +215,9 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
 
         var show = $typeahead.show;
         $typeahead.show = function () {
+          const hasMatches = scope.$matches && scope.$matches.length > 0;
+          element.parent().attr('aria-expanded', hasMatches ? 'true' : 'false');
+
           show();
           // use timeout to hookup the events to prevent
           // event bubbling from being processed immediately.
@@ -212,7 +230,15 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
 
                 var assertDiv = document.getElementById(options.id + '_sr_text');
                 if (!assertDiv) {
-                  $typeahead.$element.parent().append('<div id="' + options.id + '_sr_text" aria-live="assertive" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;"></div>');
+                  $typeahead.$element.parent().append('<div id="' + options.id + '_sr_text" aria-live="assertive" aria-atomic="true" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;"></div>');
+                }
+                const liveRegion = document.getElementById(options.id + '_sr_text');
+                if (liveRegion) {
+                  if (hasMatches) {
+                    liveRegion.textContent = scope.$matches.length + ' Results are available.';
+                  } else {
+                    liveRegion.textContent = 'No results found.';
+                  }
                 }
               }
 
@@ -245,6 +271,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           angular.element(assertDiv).remove();
 
           setAriaActiveDescendant();
+          element.parent().attr('aria-expanded', 'false');
 
           hide();
         };
